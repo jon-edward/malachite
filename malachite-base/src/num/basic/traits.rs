@@ -100,12 +100,3 @@ macro_rules! impl_non_zero {
         )+
     }
 }
-
-impl_non_zero!(
-    NonZeroUsize && NonZeroIsize,
-    NonZeroU128 && NonZeroI128,
-    NonZeroU64 && NonZeroI64,
-    NonZeroU32 && NonZeroI32,
-    NonZeroU16 && NonZeroI16,
-    NonZeroU8 && NonZeroI8
-);
