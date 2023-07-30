@@ -61,11 +61,9 @@ macro_rules! impl_trivial_random_primitive_ints {
 }
 impl_trivial_random_primitive_ints!(u32);
 impl_trivial_random_primitive_ints!(u64);
-impl_trivial_random_primitive_ints!(u128);
 impl_trivial_random_primitive_ints!(usize);
 impl_trivial_random_primitive_ints!(i32);
 impl_trivial_random_primitive_ints!(i64);
-impl_trivial_random_primitive_ints!(i128);
 impl_trivial_random_primitive_ints!(isize);
 
 fn get_random<T: PrimitiveInt>(rng: &mut ChaCha20Rng, state: &mut ThriftyRandomState) -> T {
