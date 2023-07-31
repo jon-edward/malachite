@@ -142,38 +142,6 @@ pub fn test_invert_u64_table() {
     }
 }
 
-// Computes
-// $$
-// f(x) = \left \lfloor \frac{2^{128} - 2^{64}x - 1}{x} \right \rfloor =
-//     \left \lfloor \frac{2^{128}-1}{x}-2^{64} \right \rfloor.
-// $$
-//
-// The highest bit of `x` must be set.
-//
-// # Worst-case complexity
-// Constant time and additional memory.
-//
-// This is equivalent to `invert_limb` from `longlong.h`, FLINT 2.7.1, when `GMP_LIMB_BITS == 64`.
-pub_crate_test! {limbs_invert_limb_u64(x: u64) -> u64 {
-    assert!(x.get_highest_bit());
-    let a = (x >> 24) + 1;
-    let b = INVERT_U64_TABLE[usize::exact_from(x << 1 >> 56)];
-    let c = (b << 11).wrapping_sub(((b * b).wrapping_mul(a) >> 40) + 1);
-    let d = (c.wrapping_mul(u64::power_of_2(60).wrapping_sub(c.wrapping_mul(a))) >> 47)
-        .wrapping_add(c << 13);
-    let mut e = d.wrapping_mul(x >> 1).wrapping_neg();
-    if x.odd() {
-        e.wrapping_sub_assign(d.wrapping_sub(d >> 1));
-    }
-    let f = (d << 31).wrapping_add((u128::from(d) * u128::from(e)).upper_half() >> 1);
-    f.wrapping_sub(
-        (u128::from(f) * u128::from(x))
-            .wrapping_add(u128::from(x))
-            .upper_half()
-            .wrapping_add(x),
-    )
-}}
-
 // This is equivalent to `n_ll_mod_preinv` from `ulong_extras/ll_mod_preinv.c`, FLINT 2.7.1.
 pub_test! {limbs_mod_preinverted<
     T: PrimitiveUnsigned,
@@ -294,7 +262,6 @@ macro_rules! impl_mod_mul_precomputed_fast {
     };
 }
 impl_mod_mul_precomputed_fast!(u32, u64, limbs_invert_limb_u32);
-impl_mod_mul_precomputed_fast!(u64, u128, limbs_invert_limb_u64);
 
 macro_rules! impl_mod_mul_precomputed_promoted {
     ($t:ident) => {
@@ -340,37 +307,6 @@ macro_rules! impl_mod_mul_precomputed_promoted {
 }
 impl_mod_mul_precomputed_promoted!(u8);
 impl_mod_mul_precomputed_promoted!(u16);
-
-impl ModMulPrecomputed<u128, u128> for u128 {
-    type Output = u128;
-    type Data = ();
-
-    /// Precomputes data for modular multiplication. See `mod_mul_precomputed` and
-    /// [`mod_mul_precomputed_assign`](super::traits::ModMulPrecomputedAssign).
-    ///
-    /// # Worst-case complexity
-    /// Constant time and additional memory.
-    fn precompute_mod_mul_data(_m: &u128) {}
-
-    /// Multiplies two numbers modulo a third number $m$. Assumes the inputs are already reduced
-    /// modulo $m$.
-    ///
-    /// Some precomputed data is provided; this speeds up computations involving several modular
-    /// multiplications with the same modulus. The precomputed data should be obtained using
-    /// [`precompute_mod_mul_data`](ModMulPrecomputed::precompute_mod_mul_data).
-    ///
-    /// # Worst-case complexity
-    /// Constant time and additional memory.
-    ///
-    /// # Examples
-    /// See [here](super::mod_mul#mod_mul_precomputed).
-    ///
-    /// This is equivalent to `n_mulmod2_preinv` from `ulong_extras.h`, FLINT 2.7.1.
-    #[inline]
-    fn mod_mul_precomputed(self, other: u128, m: u128, _data: &()) -> u128 {
-        naive_mod_mul(self, other, m)
-    }
-}
 
 impl ModMulPrecomputed<usize, usize> for usize {
     type Output = usize;
