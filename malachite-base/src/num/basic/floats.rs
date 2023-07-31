@@ -99,13 +99,11 @@ pub trait PrimitiveFloat:
     + ConvertibleFrom<u16>
     + ConvertibleFrom<u32>
     + ConvertibleFrom<u64>
-    + ConvertibleFrom<u128>
     + ConvertibleFrom<usize>
     + ConvertibleFrom<i8>
     + ConvertibleFrom<i16>
     + ConvertibleFrom<i32>
     + ConvertibleFrom<i64>
-    + ConvertibleFrom<i128>
     + ConvertibleFrom<isize>
     + Copy
     + Debug
@@ -152,25 +150,21 @@ pub trait PrimitiveFloat:
     + RoundingFrom<u16>
     + RoundingFrom<u32>
     + RoundingFrom<u64>
-    + RoundingFrom<u128>
     + RoundingFrom<usize>
     + RoundingFrom<i8>
     + RoundingFrom<i16>
     + RoundingFrom<i32>
     + RoundingFrom<i64>
-    + RoundingFrom<i128>
     + RoundingFrom<isize>
     + RoundingInto<u8>
     + RoundingInto<u16>
     + RoundingInto<u32>
     + RoundingInto<u64>
-    + RoundingInto<u128>
     + RoundingInto<usize>
     + RoundingInto<i8>
     + RoundingInto<i16>
     + RoundingInto<i32>
     + RoundingInto<i64>
-    + RoundingInto<i128>
     + RoundingInto<isize>
     + SciMantissaAndExponent<Self, i64>
     + Sign
