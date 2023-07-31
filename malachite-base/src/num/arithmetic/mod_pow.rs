@@ -305,4 +305,4 @@ macro_rules! impl_mod_pow {
         }
     };
 }
-apply_to_unsigneds!(impl_mod_pow);
+apply_to_unsigneds_wo_u64!(impl_mod_pow);
