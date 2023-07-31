@@ -32,7 +32,7 @@ use std::marker::PhantomData;
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub struct ThriftyRandomState {
     x: u32,
-    bits_left: u64,
+    bits_left: u32,
 }
 
 #[doc(hidden)]
@@ -60,10 +60,8 @@ macro_rules! impl_trivial_random_primitive_ints {
     };
 }
 impl_trivial_random_primitive_ints!(u32);
-impl_trivial_random_primitive_ints!(u64);
 impl_trivial_random_primitive_ints!(usize);
 impl_trivial_random_primitive_ints!(i32);
-impl_trivial_random_primitive_ints!(i64);
 impl_trivial_random_primitive_ints!(isize);
 
 fn get_random<T: PrimitiveInt>(rng: &mut ChaCha20Rng, state: &mut ThriftyRandomState) -> T {
@@ -282,7 +280,7 @@ impl<T: PrimitiveUnsigned> Iterator for RandomUnsignedBitChunks<T> {
 pub trait RandomSignedChunkable: Sized {
     type AbsoluteChunks: Clone + Debug;
 
-    fn new_absolute_chunks(seed: Seed, chunk_size: u64) -> Self::AbsoluteChunks;
+    fn new_absolute_chunks(seed: Seed, chunk_size: u32) -> Self::AbsoluteChunks;
 
     fn next_chunk(xs: &mut Self::AbsoluteChunks) -> Option<Self>;
 }
@@ -292,7 +290,7 @@ macro_rules! impl_random_signed_chunkable {
         impl RandomSignedChunkable for $s {
             type AbsoluteChunks = RandomUnsignedBitChunks<$u>;
 
-            fn new_absolute_chunks(seed: Seed, chunk_size: u64) -> RandomUnsignedBitChunks<$u> {
+            fn new_absolute_chunks(seed: Seed, chunk_size: u32) -> RandomUnsignedBitChunks<$u> {
                 random_unsigned_bit_chunks(seed, chunk_size)
             }
 
@@ -787,7 +785,7 @@ pub fn random_signed_inclusive_range<T: PrimitiveSigned>(
 /// ```
 pub fn random_unsigned_bit_chunks<T: PrimitiveUnsigned>(
     seed: Seed,
-    chunk_size: u64,
+    chunk_size: u32,
 ) -> RandomUnsignedBitChunks<T> {
     RandomUnsignedBitChunks {
         xs: iterator_to_bit_chunks(random_primitive_ints(seed), T::WIDTH, chunk_size),
@@ -829,7 +827,7 @@ pub fn random_unsigned_bit_chunks<T: PrimitiveUnsigned>(
 /// ```
 pub fn random_signed_bit_chunks<T: PrimitiveSigned>(
     seed: Seed,
-    chunk_size: u64,
+    chunk_size: u32,
 ) -> RandomSignedBitChunks<T> {
     assert!(chunk_size <= T::WIDTH);
     RandomSignedBitChunks {
@@ -879,7 +877,7 @@ pub fn random_highest_bit_set_unsigneds<T: PrimitiveUnsigned>(
 #[derive(Clone, Debug)]
 pub struct RandomPrimitiveFloatRange<T: PrimitiveFloat> {
     phantom: PhantomData<*const T>,
-    xs: RandomUnsignedRange<u64>,
+    xs: RandomUnsignedRange<u32>,
 }
 
 impl<T: PrimitiveFloat> Iterator for RandomPrimitiveFloatRange<T> {
@@ -897,7 +895,7 @@ impl<T: PrimitiveFloat> Iterator for RandomPrimitiveFloatRange<T> {
 #[derive(Clone, Debug)]
 pub struct RandomPrimitiveFloatInclusiveRange<T: PrimitiveFloat> {
     phantom: PhantomData<*const T>,
-    xs: RandomUnsignedInclusiveRange<u64>,
+    xs: RandomUnsignedInclusiveRange<u32>,
 }
 
 impl<T: PrimitiveFloat> Iterator for RandomPrimitiveFloatInclusiveRange<T> {
@@ -1288,8 +1286,8 @@ pub fn random_nonzero_primitive_floats<T: PrimitiveFloat>(
 #[derive(Clone, Debug)]
 pub struct RandomPrimitiveFloats<T: PrimitiveFloat> {
     phantom: PhantomData<*const T>,
-    pub(crate) xs: RandomUnsignedInclusiveRange<u64>,
-    nan: u64,
+    pub(crate) xs: RandomUnsignedInclusiveRange<u32>,
+    nan: u32,
 }
 
 impl<T: PrimitiveFloat> Iterator for RandomPrimitiveFloats<T> {
@@ -1350,11 +1348,11 @@ pub fn random_primitive_floats<T: PrimitiveFloat>(seed: Seed) -> RandomPrimitive
 #[derive(Clone, Debug)]
 pub struct SpecialRandomPositiveFiniteFloats<T: PrimitiveFloat> {
     seed: Seed,
-    sci_exponents: GeometricRandomSignedRange<i64>,
-    range_map: HashMap<i64, GeometricRandomNaturalValues<u64>>,
+    sci_exponents: GeometricRandomSignedRange<i32>,
+    range_map: HashMap<i32, GeometricRandomNaturalValues<u32>>,
     ranges: VariableRangeGenerator,
-    mean_precision_n: u64,
-    mean_precision_d: u64,
+    mean_precision_n: u32,
+    mean_precision_d: u32,
     phantom: PhantomData<*const T>,
 }
 
@@ -1381,14 +1379,14 @@ impl<T: PrimitiveFloat> Iterator for SpecialRandomPositiveFiniteFloats<T> {
         } else {
             // e.g. if precision is 4, generate odd values from 1001 through 1111, inclusive
             let x = self.ranges.next_in_range(
-                u64::power_of_2(precision - 2),
-                u64::power_of_2(precision - 1),
+                u32::power_of_2(precision - 2),
+                u32::power_of_2(precision - 1),
             );
             (x << 1) | 1
         };
         T::from_integer_mantissa_and_exponent(
             mantissa,
-            sci_exponent - i64::wrapping_from(precision) + 1,
+            sci_exponent - i32::wrapping_from(precision) + 1,
         )
     }
 }
@@ -1435,10 +1433,10 @@ impl<T: PrimitiveFloat> Iterator for SpecialRandomPositiveFiniteFloats<T> {
 /// ```
 pub fn special_random_positive_finite_primitive_floats<T: PrimitiveFloat>(
     seed: Seed,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
 ) -> SpecialRandomPositiveFiniteFloats<T> {
     assert_ne!(mean_precision_denominator, 0);
     assert!(mean_precision_numerator > mean_precision_denominator);
@@ -1520,10 +1518,10 @@ impl<T: PrimitiveFloat> Iterator for SpecialRandomNegativeFiniteFloats<T> {
 #[inline]
 pub fn special_random_negative_finite_primitive_floats<T: PrimitiveFloat>(
     seed: Seed,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
 ) -> SpecialRandomNegativeFiniteFloats<T> {
     SpecialRandomNegativeFiniteFloats(special_random_positive_finite_primitive_floats(
         seed,
@@ -1597,10 +1595,10 @@ impl<T: PrimitiveFloat> Iterator for SpecialRandomNonzeroFiniteFloats<T> {
 #[inline]
 pub fn special_random_nonzero_finite_primitive_floats<T: PrimitiveFloat>(
     seed: Seed,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
 ) -> SpecialRandomNonzeroFiniteFloats<T> {
     SpecialRandomNonzeroFiniteFloats {
         bs: random_bools(seed.fork("bs")),
@@ -1659,12 +1657,12 @@ pub fn special_random_nonzero_finite_primitive_floats<T: PrimitiveFloat>(
 #[inline]
 pub fn special_random_finite_primitive_floats<T: PrimitiveFloat>(
     seed: Seed,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
-    mean_zero_p_numerator: u64,
-    mean_zero_p_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
+    mean_zero_p_numerator: u32,
+    mean_zero_p_denominator: u32,
 ) -> WithSpecialValues<SpecialRandomNonzeroFiniteFloats<T>> {
     with_special_values(
         seed,
@@ -1728,12 +1726,12 @@ pub fn special_random_finite_primitive_floats<T: PrimitiveFloat>(
 #[inline]
 pub fn special_random_positive_primitive_floats<T: PrimitiveFloat>(
     seed: Seed,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
-    mean_special_p_numerator: u64,
-    mean_special_p_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
+    mean_special_p_numerator: u32,
+    mean_special_p_denominator: u32,
 ) -> WithSpecialValue<SpecialRandomPositiveFiniteFloats<T>> {
     with_special_value(
         seed,
@@ -1797,12 +1795,12 @@ pub fn special_random_positive_primitive_floats<T: PrimitiveFloat>(
 #[inline]
 pub fn special_random_negative_primitive_floats<T: PrimitiveFloat>(
     seed: Seed,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
-    mean_special_p_numerator: u64,
-    mean_special_p_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
+    mean_special_p_numerator: u32,
+    mean_special_p_denominator: u32,
 ) -> WithSpecialValue<SpecialRandomNegativeFiniteFloats<T>> {
     with_special_value(
         seed,
@@ -1866,12 +1864,12 @@ pub fn special_random_negative_primitive_floats<T: PrimitiveFloat>(
 #[inline]
 pub fn special_random_nonzero_primitive_floats<T: PrimitiveFloat>(
     seed: Seed,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
-    mean_special_p_numerator: u64,
-    mean_special_p_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
+    mean_special_p_numerator: u32,
+    mean_special_p_denominator: u32,
 ) -> WithSpecialValues<SpecialRandomNonzeroFiniteFloats<T>> {
     with_special_values(
         seed,
@@ -1933,12 +1931,12 @@ pub fn special_random_nonzero_primitive_floats<T: PrimitiveFloat>(
 #[inline]
 pub fn special_random_primitive_floats<T: PrimitiveFloat>(
     seed: Seed,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
-    mean_special_p_numerator: u64,
-    mean_special_p_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
+    mean_special_p_numerator: u32,
+    mean_special_p_denominator: u32,
 ) -> WithSpecialValues<SpecialRandomNonzeroFiniteFloats<T>> {
     with_special_values(
         seed,
@@ -1959,13 +1957,13 @@ pub fn special_random_primitive_floats<T: PrimitiveFloat>(
 
 // normalized sci_exponent and raw mantissas in input, adjusted sci_exponent and mantissas in output
 fn mantissas_inclusive<T: PrimitiveFloat>(
-    mut sci_exponent: i64,
-    mut am: u64,
-    mut bm: u64,
-    precision: u64,
-) -> Option<(i64, u64, u64)> {
+    mut sci_exponent: i32,
+    mut am: u32,
+    mut bm: u32,
+    precision: u32,
+) -> Option<(i32, u32, u32)> {
     assert_ne!(precision, 0);
-    let p: u64 = if sci_exponent < T::MIN_NORMAL_EXPONENT {
+    let p: u32 = if sci_exponent < T::MIN_NORMAL_EXPONENT {
         let ab = am.significant_bits();
         let bb = bm.significant_bits();
         assert_eq!(ab, bb);
@@ -1986,9 +1984,9 @@ fn mantissas_inclusive<T: PrimitiveFloat>(
         hi -= 1;
     }
     if sci_exponent >= T::MIN_NORMAL_EXPONENT {
-        sci_exponent -= i64::wrapping_from(T::MANTISSA_WIDTH);
+        sci_exponent -= i32::wrapping_from(T::MANTISSA_WIDTH);
     }
-    sci_exponent += i64::wrapping_from(p);
+    sci_exponent += i32::wrapping_from(p);
     if lo > hi {
         None
     } else {
@@ -2000,12 +1998,12 @@ fn mantissas_inclusive<T: PrimitiveFloat>(
 #[derive(Clone, Debug)]
 pub struct SpecialRandomPositiveFiniteFloatInclusiveRange<T: PrimitiveFloat> {
     phantom: PhantomData<*const T>,
-    am: u64, // raw mantissa
-    bm: u64,
-    ae: i64, // sci_exponent
-    be: i64,
-    sci_exponents: GeometricRandomSignedRange<i64>,
-    precision_range_map: HashMap<i64, Vec<(i64, u64, u64)>>,
+    am: u32, // raw mantissa
+    bm: u32,
+    ae: i32, // sci_exponent
+    be: i32,
+    sci_exponents: GeometricRandomSignedRange<i32>,
+    precision_range_map: HashMap<i32, Vec<(i32, u32, u32)>>,
     precision_indices: GeometricRandomNaturalValues<usize>,
     ranges: VariableRangeGenerator,
 }
@@ -2054,10 +2052,10 @@ fn special_random_positive_finite_float_inclusive_range<T: PrimitiveFloat>(
     seed: Seed,
     a: T,
     b: T,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
 ) -> SpecialRandomPositiveFiniteFloatInclusiveRange<T> {
     assert!(a.is_finite());
     assert!(b.is_finite());
@@ -2066,14 +2064,14 @@ fn special_random_positive_finite_float_inclusive_range<T: PrimitiveFloat>(
     let (am, ae) = a.raw_mantissa_and_exponent();
     let (bm, be) = b.raw_mantissa_and_exponent();
     let ae = if ae == 0 {
-        i64::wrapping_from(am.significant_bits()) + T::MIN_EXPONENT - 1
+        i32::wrapping_from(am.significant_bits()) + T::MIN_EXPONENT - 1
     } else {
-        i64::wrapping_from(ae) - T::MAX_EXPONENT
+        i32::wrapping_from(ae) - T::MAX_EXPONENT
     };
     let be = if be == 0 {
-        i64::wrapping_from(bm.significant_bits()) + T::MIN_EXPONENT - 1
+        i32::wrapping_from(bm.significant_bits()) + T::MIN_EXPONENT - 1
     } else {
-        i64::wrapping_from(be) - T::MAX_EXPONENT
+        i32::wrapping_from(be) - T::MAX_EXPONENT
     };
     SpecialRandomPositiveFiniteFloatInclusiveRange {
         phantom: PhantomData,
@@ -2139,10 +2137,10 @@ fn special_random_finite_float_inclusive_range<T: PrimitiveFloat>(
     seed: Seed,
     a: T,
     b: T,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
 ) -> SpecialRandomFiniteFloatInclusiveRange<T> {
     assert!(a.is_finite());
     assert!(b.is_finite());
@@ -2294,12 +2292,12 @@ pub fn special_random_primitive_float_range<T: PrimitiveFloat>(
     seed: Seed,
     a: T,
     b: T,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
-    mean_special_p_numerator: u64,
-    mean_special_p_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
+    mean_special_p_numerator: u32,
+    mean_special_p_denominator: u32,
 ) -> SpecialRandomFloatInclusiveRange<T> {
     assert!(!a.is_nan());
     assert!(!b.is_nan());
@@ -2379,12 +2377,12 @@ pub fn special_random_primitive_float_inclusive_range<T: PrimitiveFloat>(
     seed: Seed,
     mut a: T,
     mut b: T,
-    mean_sci_exponent_numerator: u64,
-    mean_sci_exponent_denominator: u64,
-    mean_precision_numerator: u64,
-    mean_precision_denominator: u64,
-    mean_special_p_numerator: u64,
-    mean_special_p_denominator: u64,
+    mean_sci_exponent_numerator: u32,
+    mean_sci_exponent_denominator: u32,
+    mean_precision_numerator: u32,
+    mean_precision_denominator: u32,
+    mean_special_p_numerator: u32,
+    mean_special_p_denominator: u32,
 ) -> SpecialRandomFloatInclusiveRange<T> {
     assert!(!a.is_nan());
     assert!(!b.is_nan());
@@ -2460,7 +2458,7 @@ pub struct VariableRangeGenerator {
     xs: RandomPrimitiveInts<u32>,
     x: u32,
     in_inner_loop: bool,
-    remaining_x_bits: u64,
+    remaining_x_bits: u32,
 }
 
 impl VariableRangeGenerator {
@@ -2494,7 +2492,7 @@ impl VariableRangeGenerator {
     /// }
     /// assert_eq!(xs, &[1, 6, 5, 7, 6, 3, 1, 2, 4, 5]);
     /// ```
-    pub fn next_bit_chunk<T: PrimitiveUnsigned>(&mut self, chunk_size: u64) -> T {
+    pub fn next_bit_chunk<T: PrimitiveUnsigned>(&mut self, chunk_size: u32) -> T {
         assert_ne!(chunk_size, 0);
         assert!(chunk_size <= T::WIDTH);
         let mut y = T::ZERO;
