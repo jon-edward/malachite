@@ -37,12 +37,12 @@ impl<T: PrimitiveInt> Iterator for GeometricRandomNaturalValues<T> {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct SimpleRational {
-    pub(crate) n: u64,
-    pub(crate) d: u64,
+    pub(crate) n: u32,
+    pub(crate) d: u32,
 }
 
 impl SimpleRational {
-    pub(crate) fn new(n: u64, d: u64) -> SimpleRational {
+    pub(crate) fn new(n: u32, d: u32) -> SimpleRational {
         assert_ne!(d, 0);
         let gcd = n.gcd(d);
         SimpleRational {
@@ -61,7 +61,7 @@ impl SimpleRational {
 
     // unwrap not const yet
     #[allow(clippy::missing_const_for_fn)]
-    fn sub_u64(self, x: u64) -> SimpleRational {
+    fn sub_u32(self, x: u32) -> SimpleRational {
         SimpleRational {
             n: self.n.checked_sub(x.checked_mul(self.d).unwrap()).unwrap(),
             d: self.d,
@@ -71,11 +71,11 @@ impl SimpleRational {
 
 pub(crate) fn mean_to_p_with_min<T: PrimitiveInt>(
     min: T,
-    um_numerator: u64,
-    um_denominator: u64,
-) -> (u64, u64) {
+    um_numerator: u32,
+    um_denominator: u32,
+) -> (u32, u32) {
     let um = SimpleRational::new(um_numerator, um_denominator);
-    let p = um.sub_u64(ExactInto::<u64>::exact_into(min)).inverse();
+    let p = um.sub_u32(ExactInto::<u32>::exact_into(min)).inverse();
     (p.n, p.d)
 }
 
@@ -83,8 +83,8 @@ fn geometric_random_natural_values_range<T: PrimitiveInt>(
     seed: Seed,
     min: T,
     max: T,
-    um_numerator: u64,
-    um_denominator: u64,
+    um_numerator: u32,
+    um_denominator: u32,
 ) -> GeometricRandomNaturalValues<T> {
     assert!(min <= max);
     assert_ne!(um_denominator, 0);
@@ -128,8 +128,8 @@ fn geometric_random_negative_signeds_range<T: PrimitiveSigned>(
     seed: Seed,
     abs_min: T,
     abs_max: T,
-    abs_um_numerator: u64,
-    abs_um_denominator: u64,
+    abs_um_numerator: u32,
+    abs_um_denominator: u32,
 ) -> GeometricRandomNegativeSigneds<T> {
     assert!(abs_min >= abs_max);
     assert_ne!(abs_um_denominator, 0);
@@ -190,8 +190,8 @@ fn geometric_random_nonzero_signeds_range<T: PrimitiveSigned>(
     seed: Seed,
     min: T,
     max: T,
-    abs_um_numerator: u64,
-    abs_um_denominator: u64,
+    abs_um_numerator: u32,
+    abs_um_denominator: u32,
 ) -> GeometricRandomNonzeroSigneds<T> {
     assert_ne!(abs_um_denominator, 0);
     let (numerator, denominator) = mean_to_p_with_min(T::ONE, abs_um_numerator, abs_um_denominator);
@@ -255,8 +255,8 @@ fn geometric_random_signeds_range<T: PrimitiveSigned>(
     seed: Seed,
     min: T,
     max: T,
-    abs_um_numerator: u64,
-    abs_um_denominator: u64,
+    abs_um_numerator: u32,
+    abs_um_denominator: u32,
 ) -> GeometricRandomSigneds<T> {
     assert_ne!(abs_um_denominator, 0);
     let (numerator, denominator) =
@@ -335,7 +335,7 @@ impl<T: PrimitiveSigned> Iterator for GeometricRandomSignedRange<T> {
 /// use malachite_base::random::EXAMPLE_SEED;
 ///
 /// assert_eq!(
-///     prefix_to_string(geometric_random_unsigneds::<u64>(EXAMPLE_SEED, 1, 1), 10),
+///     prefix_to_string(geometric_random_unsigneds::<u32>(EXAMPLE_SEED, 1, 1), 10),
 ///     "[1, 0, 0, 3, 4, 4, 1, 0, 0, 1, ...]"
 /// )
 /// ```
@@ -359,8 +359,8 @@ impl<T: PrimitiveSigned> Iterator for GeometricRandomSignedRange<T> {
 /// $$
 pub fn geometric_random_unsigneds<T: PrimitiveUnsigned>(
     seed: Seed,
-    um_numerator: u64,
-    um_denominator: u64,
+    um_numerator: u32,
+    um_denominator: u32,
 ) -> GeometricRandomNaturalValues<T> {
     assert_ne!(um_numerator, 0);
     geometric_random_natural_values_range(seed, T::ZERO, T::MAX, um_numerator, um_denominator)
@@ -410,7 +410,7 @@ pub fn geometric_random_unsigneds<T: PrimitiveUnsigned>(
 /// use malachite_base::random::EXAMPLE_SEED;
 ///
 /// assert_eq!(
-///     prefix_to_string(geometric_random_positive_unsigneds::<u64>(EXAMPLE_SEED, 2, 1), 10),
+///     prefix_to_string(geometric_random_positive_unsigneds::<u32>(EXAMPLE_SEED, 2, 1), 10),
 ///     "[2, 1, 1, 4, 5, 5, 2, 1, 1, 2, ...]"
 /// )
 /// ```
@@ -434,8 +434,8 @@ pub fn geometric_random_unsigneds<T: PrimitiveUnsigned>(
 /// $$
 pub fn geometric_random_positive_unsigneds<T: PrimitiveUnsigned>(
     seed: Seed,
-    um_numerator: u64,
-    um_denominator: u64,
+    um_numerator: u32,
+    um_denominator: u32,
 ) -> GeometricRandomNaturalValues<T> {
     assert!(um_numerator > um_denominator);
     geometric_random_natural_values_range(seed, T::ONE, T::MAX, um_numerator, um_denominator)
@@ -521,8 +521,8 @@ pub fn geometric_random_positive_unsigneds<T: PrimitiveUnsigned>(
 /// $$
 pub fn geometric_random_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    abs_um_numerator: u64,
-    abs_um_denominator: u64,
+    abs_um_numerator: u32,
+    abs_um_denominator: u32,
 ) -> GeometricRandomSigneds<T> {
     assert_ne!(abs_um_numerator, 0);
     geometric_random_signeds_range(seed, T::MIN, T::MAX, abs_um_numerator, abs_um_denominator)
@@ -600,8 +600,8 @@ pub fn geometric_random_signeds<T: PrimitiveSigned>(
 /// $$
 pub fn geometric_random_natural_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    um_numerator: u64,
-    um_denominator: u64,
+    um_numerator: u32,
+    um_denominator: u32,
 ) -> GeometricRandomNaturalValues<T> {
     assert_ne!(um_numerator, 0);
     geometric_random_natural_values_range(seed, T::ZERO, T::MAX, um_numerator, um_denominator)
@@ -679,8 +679,8 @@ pub fn geometric_random_natural_signeds<T: PrimitiveSigned>(
 /// $$
 pub fn geometric_random_positive_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    um_numerator: u64,
-    um_denominator: u64,
+    um_numerator: u32,
+    um_denominator: u32,
 ) -> GeometricRandomNaturalValues<T> {
     geometric_random_natural_values_range(seed, T::ONE, T::MAX, um_numerator, um_denominator)
 }
@@ -762,8 +762,8 @@ pub fn geometric_random_positive_signeds<T: PrimitiveSigned>(
 /// $$
 pub fn geometric_random_negative_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    abs_um_numerator: u64,
-    abs_um_denominator: u64,
+    abs_um_numerator: u32,
+    abs_um_denominator: u32,
 ) -> GeometricRandomNegativeSigneds<T> {
     assert!(abs_um_numerator > abs_um_denominator);
     geometric_random_negative_signeds_range(
@@ -862,8 +862,8 @@ pub fn geometric_random_negative_signeds<T: PrimitiveSigned>(
 /// $$
 pub fn geometric_random_nonzero_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    abs_um_numerator: u64,
-    abs_um_denominator: u64,
+    abs_um_numerator: u32,
+    abs_um_denominator: u32,
 ) -> GeometricRandomNonzeroSigneds<T> {
     assert!(abs_um_numerator > abs_um_denominator);
     geometric_random_nonzero_signeds_range(
@@ -944,8 +944,8 @@ pub fn geometric_random_unsigned_range<T: PrimitiveUnsigned>(
     seed: Seed,
     a: T,
     b: T,
-    um_numerator: u64,
-    um_denominator: u64,
+    um_numerator: u32,
+    um_denominator: u32,
 ) -> GeometricRandomNaturalValues<T> {
     if a >= b {
         panic!("a must be less than b. a: {}, b: {}", a, b);
@@ -1025,8 +1025,8 @@ pub fn geometric_random_unsigned_inclusive_range<T: PrimitiveUnsigned>(
     seed: Seed,
     a: T,
     b: T,
-    um_numerator: u64,
-    um_denominator: u64,
+    um_numerator: u32,
+    um_denominator: u32,
 ) -> GeometricRandomNaturalValues<T> {
     if a > b {
         panic!("a must be less than or equal to b. a: {}, b: {}", a, b);
@@ -1122,8 +1122,8 @@ pub fn geometric_random_signed_range<T: PrimitiveSigned>(
     seed: Seed,
     a: T,
     b: T,
-    abs_um_numerator: u64,
-    abs_um_denominator: u64,
+    abs_um_numerator: u32,
+    abs_um_denominator: u32,
 ) -> GeometricRandomSignedRange<T> {
     if a >= b {
         panic!("a must be less than b. a: {}, b: {}", a, b);
@@ -1243,8 +1243,8 @@ pub fn geometric_random_signed_inclusive_range<T: PrimitiveSigned>(
     seed: Seed,
     a: T,
     b: T,
-    abs_um_numerator: u64,
-    abs_um_denominator: u64,
+    abs_um_numerator: u32,
+    abs_um_denominator: u32,
 ) -> GeometricRandomSignedRange<T> {
     if a > b {
         panic!("a must be less than or equal to b. a: {}, b: {}", a, b);
