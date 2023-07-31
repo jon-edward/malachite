@@ -28,9 +28,6 @@ use crate::num::logic::traits::{BitBlockAccess, HammingDistance};
 /// Defines functions on primitive unsigned integer types: uxx and usize.
 pub trait PrimitiveUnsigned:
     BitBlockAccess<Bits = Self>
-    + CeilingLogBase<Output = u64>
-    + CeilingLogBase2<Output = u64>
-    + CeilingLogBasePowerOf2<u64, Output = u64>
     + CeilingDivAssignNegMod<Self, ModOutput = Self>
     + CeilingDivNegMod<Self, DivOutput = Self, ModOutput = Self>
     + CheckedDoubleFactorial
@@ -39,32 +36,23 @@ pub trait PrimitiveUnsigned:
     + CheckedPrimorial
     + CheckedSubfactorial
     + CheckedLcm<Self, Output = Self>
-    + CheckedLogBase<Output = u64>
-    + CheckedLogBase2<Output = u64>
-    + CheckedLogBasePowerOf2<u64, Output = u64>
     + CheckedNextPowerOf2<Output = Self>
     + CoprimeWith<Self>
     + DoubleFactorial
     + Digits<u8>
     + Digits<u16>
     + Digits<u32>
-    + Digits<u64>
     + Digits<usize>
     + ExtendedGcd<Self, Gcd = Self>
     + Factorial
-    + FloorLogBase<Output = u64>
-    + FloorLogBase2<Output = u64>
-    + FloorLogBasePowerOf2<u64, Output = u64>
     + From<u8>
     + FromOtherTypeSlice<u8>
     + FromOtherTypeSlice<u16>
     + FromOtherTypeSlice<u32>
-    + FromOtherTypeSlice<u64>
     + FromOtherTypeSlice<usize>
     + Gcd<Self, Output = Self>
     + GcdAssign<Self>
     + HammingDistance
-    + IntegerMantissaAndExponent<Self, u64>
     + IsPowerOf2
     + Lcm<Self, Output = Self>
     + LcmAssign<Self>
@@ -78,8 +66,6 @@ pub trait PrimitiveUnsigned:
     + ModMulPrecomputedAssign<Self, Self>
     + ModNeg<Self, Output = Self>
     + ModNegAssign<Self>
-    + ModPow<u64, Self, Output = Self>
-    + ModPowAssign<u64, Self>
     + ModPowerOf2<Output = Self>
     + ModPowerOf2Add<Self, Output = Self>
     + ModPowerOf2AddAssign<Self>
@@ -89,45 +75,33 @@ pub trait PrimitiveUnsigned:
     + ModPowerOf2MulAssign<Self>
     + ModPowerOf2Neg<Output = Self>
     + ModPowerOf2NegAssign
-    + ModPowerOf2Pow<u64, Output = Self>
-    + ModPowerOf2PowAssign<u64>
     + ModPowerOf2Shl<i8, Output = Self>
     + ModPowerOf2Shl<i16, Output = Self>
     + ModPowerOf2Shl<i32, Output = Self>
-    + ModPowerOf2Shl<i64, Output = Self>
     + ModPowerOf2Shl<u8, Output = Self>
     + ModPowerOf2Shl<u16, Output = Self>
     + ModPowerOf2Shl<u32, Output = Self>
-    + ModPowerOf2Shl<u64, Output = Self>
     + ModPowerOf2ShlAssign<u8>
     + ModPowerOf2ShlAssign<u16>
     + ModPowerOf2ShlAssign<u32>
-    + ModPowerOf2ShlAssign<u64>
     + ModPowerOf2ShlAssign<usize>
     + ModPowerOf2ShlAssign<i8>
     + ModPowerOf2ShlAssign<i16>
     + ModPowerOf2ShlAssign<i32>
-    + ModPowerOf2ShlAssign<i64>
     + ModPowerOf2ShlAssign<isize>
     + ModPowerOf2Shr<i8, Output = Self>
     + ModPowerOf2Shr<i16, Output = Self>
     + ModPowerOf2Shr<i32, Output = Self>
-    + ModPowerOf2Shr<i64, Output = Self>
     + ModPowerOf2ShrAssign<i8>
     + ModPowerOf2ShrAssign<i16>
     + ModPowerOf2ShrAssign<i32>
-    + ModPowerOf2ShrAssign<i64>
     + ModPowerOf2ShrAssign<isize>
     + ModPowerOf2Square<Output = Self>
     + ModPowerOf2SquareAssign
     + ModPowerOf2Sub<Self, Output = Self>
     + ModPowerOf2SubAssign<Self>
-    + ModPowPrecomputed<u64, Self, Output = Self>
-    + ModPowPrecomputedAssign<u64, Self>
     + ModSquare<Self, Output = Self>
     + ModSquareAssign<Self>
-    + ModSquarePrecomputed<u64, Self, Output = Self>
-    + ModSquarePrecomputedAssign<u64, Self>
     + ModSub<Self, Self, Output = Self>
     + ModSubAssign<Self, Self>
     + Multifactorial
@@ -140,32 +114,24 @@ pub trait PrimitiveUnsigned:
     + PowerOf2Digits<u8>
     + PowerOf2Digits<u16>
     + PowerOf2Digits<u32>
-    + PowerOf2Digits<u64>
     + PowerOf2Digits<usize>
     + PowerOf2DigitIterable<u8>
     + PowerOf2DigitIterable<u16>
     + PowerOf2DigitIterable<u32>
-    + PowerOf2DigitIterable<u64>
     + PowerOf2DigitIterable<usize>
     + Primes<I = PrimesIterator<Self>, LI = PrimesLessThanIterator<Self>>
     + PrimitiveInt
     + Primorial
-    + RootRem<u64, RootOutput = Self, RemOutput = Self>
-    + RootAssignRem<u64, RemOutput = Self>
-    + SciMantissaAndExponent<f32, u64>
-    + SciMantissaAndExponent<f64, u64>
     + SqrtRem<SqrtOutput = Self, RemOutput = Self>
     + SqrtAssignRem<RemOutput = Self>
     + Subfactorial
     + VecFromOtherType<u8>
     + VecFromOtherType<u16>
     + VecFromOtherType<u32>
-    + VecFromOtherType<u64>
     + VecFromOtherType<usize>
     + VecFromOtherTypeSlice<u8>
     + VecFromOtherTypeSlice<u16>
     + VecFromOtherTypeSlice<u32>
-    + VecFromOtherTypeSlice<u64>
     + VecFromOtherTypeSlice<usize>
     + XXAddYYToZZ
     + XXDivModYToQR
