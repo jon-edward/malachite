@@ -69,8 +69,8 @@ pub fn random_bools(seed: Seed) -> RandomBools {
 /// This `struct` is created by [`weighted_random_bools`]; see its documentation for more.
 #[derive(Clone, Debug)]
 pub struct WeightedRandomBools {
-    numerator: u64,
-    xs: RandomUnsignedsLessThan<u64>,
+    numerator: u32,
+    xs: RandomUnsignedsLessThan<u32>,
 }
 
 impl Iterator for WeightedRandomBools {
@@ -111,8 +111,8 @@ impl Iterator for WeightedRandomBools {
 /// ```
 pub fn weighted_random_bools(
     seed: Seed,
-    p_numerator: u64,
-    p_denominator: u64,
+    p_numerator: u32,
+    p_denominator: u32,
 ) -> WeightedRandomBools {
     assert!(p_numerator <= p_denominator);
     let p = SimpleRational::new(p_numerator, p_denominator);
