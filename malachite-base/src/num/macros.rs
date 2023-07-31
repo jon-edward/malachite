@@ -11,17 +11,6 @@ macro_rules! apply_to_unsigneds {
 
 #[doc(hidden)]
 #[macro_export]
-macro_rules! apply_to_unsigneds_wo_u64 {
-    ($m: tt) => {
-        $m!(u8);
-        $m!(u16);
-        $m!(u32);
-        $m!(usize);
-    };
-}
-
-#[doc(hidden)]
-#[macro_export]
 macro_rules! apply_to_signeds {
     ($m: tt) => {
         $m!(i8);
