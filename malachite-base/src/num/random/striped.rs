@@ -78,10 +78,10 @@ impl StripedBitSource {
     /// }
     /// assert_eq!(string, "0000000101100110000000011110000000001111");
     /// ```
-    pub fn new(seed: Seed, m_numerator: u64, m_denominator: u64) -> StripedBitSource {
+    pub fn new(seed: Seed, m_numerator: u32, m_denominator: u32) -> StripedBitSource {
         assert_ne!(m_denominator, 0);
         assert!(m_numerator > m_denominator);
-        let (numerator, denominator) = mean_to_p_with_min(1u64, m_numerator, m_denominator);
+        let (numerator, denominator) = mean_to_p_with_min(1u32, m_numerator, m_denominator);
         StripedBitSource {
             first_bit_of_block: true,
             previous_bit: false,
@@ -350,8 +350,8 @@ impl<T: PrimitiveUnsigned> Iterator for StripedRandomUnsignedsLessThan<T> {
 #[inline]
 pub fn striped_random_unsigneds<T: PrimitiveUnsigned>(
     seed: Seed,
-    m_numerator: u64,
-    m_denominator: u64,
+    m_numerator: u32,
+    m_denominator: u32,
 ) -> StripedRandomUnsignedBitChunks<T> {
     striped_random_unsigned_bit_chunks(seed, T::WIDTH, m_numerator, m_denominator)
 }
@@ -394,8 +394,8 @@ pub fn striped_random_unsigneds<T: PrimitiveUnsigned>(
 /// ```
 pub fn striped_random_positive_unsigneds<T: PrimitiveUnsigned>(
     seed: Seed,
-    m_numerator: u64,
-    m_denominator: u64,
+    m_numerator: u32,
+    m_denominator: u32,
 ) -> NonzeroValues<StripedRandomUnsignedBitChunks<T>> {
     nonzero_values(striped_random_unsigneds(seed, m_numerator, m_denominator))
 }
@@ -437,8 +437,8 @@ pub fn striped_random_positive_unsigneds<T: PrimitiveUnsigned>(
 /// ```
 pub fn striped_random_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    m_numerator: u64,
-    m_denominator: u64,
+    m_numerator: u32,
+    m_denominator: u32,
 ) -> StripedRandomSigneds<T> {
     StripedRandomSigneds {
         phantom: PhantomData,
@@ -483,8 +483,8 @@ pub fn striped_random_signeds<T: PrimitiveSigned>(
 /// ```
 pub fn striped_random_natural_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    m_numerator: u64,
-    m_denominator: u64,
+    m_numerator: u32,
+    m_denominator: u32,
 ) -> StripedRandomNaturalSigneds<T> {
     StripedRandomNaturalSigneds {
         phantom: PhantomData,
@@ -529,8 +529,8 @@ pub fn striped_random_natural_signeds<T: PrimitiveSigned>(
 /// ```
 pub fn striped_random_positive_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    m_numerator: u64,
-    m_denominator: u64,
+    m_numerator: u32,
+    m_denominator: u32,
 ) -> NonzeroValues<StripedRandomNaturalSigneds<T>> {
     nonzero_values(striped_random_natural_signeds(
         seed,
@@ -577,8 +577,8 @@ pub fn striped_random_positive_signeds<T: PrimitiveSigned>(
 /// ```
 pub fn striped_random_negative_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    m_numerator: u64,
-    m_denominator: u64,
+    m_numerator: u32,
+    m_denominator: u32,
 ) -> StripedRandomNegativeSigneds<T> {
     StripedRandomNegativeSigneds {
         phantom: PhantomData,
@@ -623,8 +623,8 @@ pub fn striped_random_negative_signeds<T: PrimitiveSigned>(
 /// ```
 pub fn striped_random_nonzero_signeds<T: PrimitiveSigned>(
     seed: Seed,
-    m_numerator: u64,
-    m_denominator: u64,
+    m_numerator: u32,
+    m_denominator: u32,
 ) -> NonzeroValues<StripedRandomSigneds<T>> {
     nonzero_values(striped_random_signeds(seed, m_numerator, m_denominator))
 }
@@ -668,9 +668,9 @@ pub fn striped_random_nonzero_signeds<T: PrimitiveSigned>(
 /// ```
 pub fn striped_random_unsigned_bit_chunks<T: PrimitiveUnsigned>(
     seed: Seed,
-    chunk_size: u64,
-    m_numerator: u64,
-    m_denominator: u64,
+    chunk_size: u32,
+    m_numerator: u32,
+    m_denominator: u32,
 ) -> StripedRandomUnsignedBitChunks<T> {
     assert!(chunk_size <= T::WIDTH);
     StripedRandomUnsignedBitChunks {
@@ -705,19 +705,19 @@ pub fn striped_random_unsigned_bit_chunks<T: PrimitiveUnsigned>(
 ///     .collect();
 /// assert_eq!(bits, "00011111111111000000011111111111111000000000001111");
 /// ```
-pub fn get_striped_bool_vec(bit_source: &mut StripedBitSource, len: u64) -> Vec<bool> {
+pub fn get_striped_bool_vec(bit_source: &mut StripedBitSource, len: u32) -> Vec<bool> {
     bit_source.end_block();
     bit_source.take(usize::exact_from(len)).collect()
 }
 
 /// Generates random striped `Vec<bool>`s.
 #[derive(Clone, Debug)]
-pub struct StripedRandomBoolVecs<I: Iterator<Item = u64>> {
+pub struct StripedRandomBoolVecs<I: Iterator<Item = u32>> {
     lengths: I,
     bit_source: StripedBitSource,
 }
 
-impl<I: Iterator<Item = u64>> Iterator for StripedRandomBoolVecs<I> {
+impl<I: Iterator<Item = u32>> Iterator for StripedRandomBoolVecs<I> {
     type Item = Vec<bool>;
 
     fn next(&mut self) -> Option<Vec<bool>> {
@@ -762,11 +762,11 @@ impl<I: Iterator<Item = u64>> Iterator for StripedRandomBoolVecs<I> {
 /// );
 /// ```
 #[inline]
-pub fn striped_random_bool_vecs_from_length_iterator<I: Iterator<Item = u64>>(
+pub fn striped_random_bool_vecs_from_length_iterator<I: Iterator<Item = u32>>(
     seed: Seed,
     lengths_gen: &dyn Fn(Seed) -> I,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
 ) -> StripedRandomBoolVecs<I> {
     StripedRandomBoolVecs {
         lengths: lengths_gen(seed.fork("lengths")),
@@ -815,10 +815,10 @@ pub fn striped_random_bool_vecs_from_length_iterator<I: Iterator<Item = u64>>(
 /// ```
 pub fn striped_random_fixed_length_bool_vecs(
     seed: Seed,
-    len: u64,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-) -> StripedRandomBoolVecs<Repeat<u64>> {
+    len: u32,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+) -> StripedRandomBoolVecs<Repeat<u32>> {
     striped_random_bool_vecs_from_length_iterator(
         seed,
         &|_| repeat(len),
@@ -873,11 +873,11 @@ pub fn striped_random_fixed_length_bool_vecs(
 #[inline]
 pub fn striped_random_bool_vecs(
     seed: Seed,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-    mean_length_numerator: u64,
-    mean_length_denominator: u64,
-) -> StripedRandomBoolVecs<GeometricRandomNaturalValues<u64>> {
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+    mean_length_numerator: u32,
+    mean_length_denominator: u32,
+) -> StripedRandomBoolVecs<GeometricRandomNaturalValues<u32>> {
     striped_random_bool_vecs_from_length_iterator(
         seed,
         &|seed_2| {
@@ -935,19 +935,19 @@ pub fn striped_random_bool_vecs(
 #[inline]
 pub fn striped_random_bool_vecs_min_length(
     seed: Seed,
-    min_length: u64,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-    mean_length_numerator: u64,
-    mean_length_denominator: u64,
-) -> StripedRandomBoolVecs<GeometricRandomNaturalValues<u64>> {
+    min_length: u32,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+    mean_length_numerator: u32,
+    mean_length_denominator: u32,
+) -> StripedRandomBoolVecs<GeometricRandomNaturalValues<u32>> {
     striped_random_bool_vecs_from_length_iterator(
         seed,
         &|seed_2| {
             geometric_random_unsigned_inclusive_range(
                 seed_2,
                 min_length,
-                u64::MAX,
+                u32::MAX,
                 mean_length_numerator,
                 mean_length_denominator,
             )
@@ -1008,11 +1008,11 @@ pub fn striped_random_bool_vecs_min_length(
 #[inline]
 pub fn striped_random_bool_vecs_length_range(
     seed: Seed,
-    a: u64,
-    b: u64,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-) -> StripedRandomBoolVecs<RandomUnsignedRange<u64>> {
+    a: u32,
+    b: u32,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+) -> StripedRandomBoolVecs<RandomUnsignedRange<u32>> {
     striped_random_bool_vecs_from_length_iterator(
         seed,
         &|seed_2| random_unsigned_range(seed_2, a, b),
@@ -1072,11 +1072,11 @@ pub fn striped_random_bool_vecs_length_range(
 #[inline]
 pub fn striped_random_bool_vecs_length_inclusive_range(
     seed: Seed,
-    a: u64,
-    b: u64,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-) -> StripedRandomBoolVecs<RandomUnsignedInclusiveRange<u64>> {
+    a: u32,
+    b: u32,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+) -> StripedRandomBoolVecs<RandomUnsignedInclusiveRange<u32>> {
     striped_random_bool_vecs_from_length_iterator(
         seed,
         &|seed_2| random_unsigned_inclusive_range(seed_2, a, b),
@@ -1121,7 +1121,7 @@ pub fn striped_random_bool_vecs_length_inclusive_range(
 /// ```
 pub fn get_striped_unsigned_vec<T: PrimitiveUnsigned>(
     bit_source: &mut StripedBitSource,
-    bit_len: u64,
+    bit_len: u32,
 ) -> Vec<T> {
     bit_source.end_block();
     bit_source
@@ -1134,13 +1134,13 @@ pub fn get_striped_unsigned_vec<T: PrimitiveUnsigned>(
 
 /// Generates random striped [`Vec`]s of unsigneds.
 #[derive(Clone, Debug)]
-pub struct StripedRandomUnsignedVecs<T: PrimitiveUnsigned, I: Iterator<Item = u64>> {
+pub struct StripedRandomUnsignedVecs<T: PrimitiveUnsigned, I: Iterator<Item = u32>> {
     phantom: PhantomData<*const T>,
     lengths: I,
     bit_source: StripedBitSource,
 }
 
-impl<T: PrimitiveUnsigned, I: Iterator<Item = u64>> Iterator for StripedRandomUnsignedVecs<T, I> {
+impl<T: PrimitiveUnsigned, I: Iterator<Item = u32>> Iterator for StripedRandomUnsignedVecs<T, I> {
     type Item = Vec<T>;
 
     fn next(&mut self) -> Option<Vec<T>> {
@@ -1188,12 +1188,12 @@ impl<T: PrimitiveUnsigned, I: Iterator<Item = u64>> Iterator for StripedRandomUn
 #[inline]
 pub fn striped_random_unsigned_vecs_from_length_iterator<
     T: PrimitiveUnsigned,
-    I: Iterator<Item = u64>,
+    I: Iterator<Item = u32>,
 >(
     seed: Seed,
     lengths_gen: &dyn Fn(Seed) -> I,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
 ) -> StripedRandomUnsignedVecs<T, I> {
     StripedRandomUnsignedVecs {
         phantom: PhantomData,
@@ -1248,10 +1248,10 @@ pub fn striped_random_unsigned_vecs_from_length_iterator<
 #[inline]
 pub fn striped_random_fixed_length_unsigned_vecs<T: PrimitiveUnsigned>(
     seed: Seed,
-    len: u64,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-) -> StripedRandomUnsignedVecs<T, Repeat<u64>> {
+    len: u32,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+) -> StripedRandomUnsignedVecs<T, Repeat<u32>> {
     striped_random_unsigned_vecs_from_length_iterator(
         seed,
         &|_| repeat(len),
@@ -1316,11 +1316,11 @@ pub fn striped_random_fixed_length_unsigned_vecs<T: PrimitiveUnsigned>(
 #[inline]
 pub fn striped_random_unsigned_vecs<T: PrimitiveUnsigned>(
     seed: Seed,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-    mean_length_numerator: u64,
-    mean_length_denominator: u64,
-) -> StripedRandomUnsignedVecs<T, GeometricRandomNaturalValues<u64>> {
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+    mean_length_numerator: u32,
+    mean_length_denominator: u32,
+) -> StripedRandomUnsignedVecs<T, GeometricRandomNaturalValues<u32>> {
     striped_random_unsigned_vecs_from_length_iterator(
         seed,
         &|seed_2| {
@@ -1391,19 +1391,19 @@ pub fn striped_random_unsigned_vecs<T: PrimitiveUnsigned>(
 #[inline]
 pub fn striped_random_unsigned_vecs_min_length<T: PrimitiveUnsigned>(
     seed: Seed,
-    min_length: u64,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-    mean_length_numerator: u64,
-    mean_length_denominator: u64,
-) -> StripedRandomUnsignedVecs<T, GeometricRandomNaturalValues<u64>> {
+    min_length: u32,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+    mean_length_numerator: u32,
+    mean_length_denominator: u32,
+) -> StripedRandomUnsignedVecs<T, GeometricRandomNaturalValues<u32>> {
     striped_random_unsigned_vecs_from_length_iterator(
         seed,
         &|seed_2| {
             geometric_random_unsigned_inclusive_range(
                 seed_2,
                 min_length,
-                u64::MAX,
+                u32::MAX,
                 mean_length_numerator,
                 mean_length_denominator,
             )
@@ -1467,11 +1467,11 @@ pub fn striped_random_unsigned_vecs_min_length<T: PrimitiveUnsigned>(
 #[inline]
 pub fn striped_random_unsigned_vecs_length_range<T: PrimitiveUnsigned>(
     seed: Seed,
-    a: u64,
-    b: u64,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-) -> StripedRandomUnsignedVecs<T, RandomUnsignedRange<u64>> {
+    a: u32,
+    b: u32,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+) -> StripedRandomUnsignedVecs<T, RandomUnsignedRange<u32>> {
     striped_random_unsigned_vecs_from_length_iterator(
         seed,
         &|seed_2| random_unsigned_range(seed_2, a, b),
@@ -1534,11 +1534,11 @@ pub fn striped_random_unsigned_vecs_length_range<T: PrimitiveUnsigned>(
 #[inline]
 pub fn striped_random_unsigned_vecs_length_inclusive_range<T: PrimitiveUnsigned>(
     seed: Seed,
-    a: u64,
-    b: u64,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
-) -> StripedRandomUnsignedVecs<T, RandomUnsignedInclusiveRange<u64>> {
+    a: u32,
+    b: u32,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
+) -> StripedRandomUnsignedVecs<T, RandomUnsignedInclusiveRange<u32>> {
     striped_random_unsigned_vecs_from_length_iterator(
         seed,
         &|seed_2| random_unsigned_inclusive_range(seed_2, a, b),
@@ -1559,7 +1559,7 @@ pub struct StripedRandomUnsignedInclusiveRange<T: PrimitiveUnsigned> {
     b: T,
     lo_template: T,
     hi_template: T,
-    next_bit: u64,
+    next_bit: u32,
     bit_source: StripedBitSource,
 }
 
@@ -1660,8 +1660,8 @@ pub fn striped_random_unsigned_range<T: PrimitiveUnsigned>(
     seed: Seed,
     a: T,
     b: T,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
 ) -> StripedRandomUnsignedInclusiveRange<T> {
     assert!(a < b);
     striped_random_unsigned_inclusive_range(
@@ -1715,8 +1715,8 @@ pub fn striped_random_unsigned_inclusive_range<T: PrimitiveUnsigned>(
     seed: Seed,
     a: T,
     b: T,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
 ) -> StripedRandomUnsignedInclusiveRange<T> {
     assert!(a <= b);
     let diff_bits = T::WIDTH - (a ^ b).leading_zeros();
@@ -1821,8 +1821,8 @@ pub fn striped_random_signed_range<
     seed: Seed,
     a: S,
     b: S,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
 ) -> StripedRandomSignedInclusiveRange<U, S> {
     assert!(a < b);
     striped_random_signed_inclusive_range(
@@ -1880,8 +1880,8 @@ pub fn striped_random_signed_inclusive_range<
     seed: Seed,
     a: S,
     b: S,
-    mean_stripe_numerator: u64,
-    mean_stripe_denominator: u64,
+    mean_stripe_numerator: u32,
+    mean_stripe_denominator: u32,
 ) -> StripedRandomSignedInclusiveRange<U, S> {
     assert!(a <= b);
     if a >= S::ZERO {
