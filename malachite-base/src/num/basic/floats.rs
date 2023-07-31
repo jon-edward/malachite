@@ -91,19 +91,13 @@ pub trait PrimitiveFloat:
     + AddMulAssign<Self, Self>
     + Ceiling<Output = Self>
     + CeilingAssign
-    + CeilingLogBase2<Output = i64>
-    + CeilingLogBasePowerOf2<u64, Output = i64>
-    + CheckedLogBase2<Output = i64>
-    + CheckedLogBasePowerOf2<u64, Output = i64>
     + ConvertibleFrom<u8>
     + ConvertibleFrom<u16>
     + ConvertibleFrom<u32>
-    + ConvertibleFrom<u64>
     + ConvertibleFrom<usize>
     + ConvertibleFrom<i8>
     + ConvertibleFrom<i16>
     + ConvertibleFrom<i32>
-    + ConvertibleFrom<i64>
     + ConvertibleFrom<isize>
     + Copy
     + Debug
@@ -113,13 +107,9 @@ pub trait PrimitiveFloat:
     + DivAssign
     + Floor<Output = Self>
     + FloorAssign
-    + FloorLogBase2<Output = i64>
-    + FloorLogBasePowerOf2<u64, Output = i64>
     + FmtRyuString
     + From<f32>
     + FromStr
-    + IntegerMantissaAndExponent<u64, i64>
-    + Into<f64>
     + IsInteger
     + IsPowerOf2
     + Iverson
@@ -137,13 +127,8 @@ pub trait PrimitiveFloat:
     + One
     + PartialEq<Self>
     + PartialOrd<Self>
-    + Pow<i64, Output = Self>
     + Pow<Self, Output = Self>
-    + PowAssign<i64>
-    + PowAssign<Self>
-    + PowerOf2<i64>
     + Product
-    + RawMantissaAndExponent<u64, u64>
     + Rem<Output = Self>
     + RemAssign<Self>
     + RoundingFrom<u8>
@@ -154,19 +139,15 @@ pub trait PrimitiveFloat:
     + RoundingFrom<i8>
     + RoundingFrom<i16>
     + RoundingFrom<i32>
-    + RoundingFrom<i64>
     + RoundingFrom<isize>
     + RoundingInto<u8>
     + RoundingInto<u16>
     + RoundingInto<u32>
-    + RoundingInto<u64>
     + RoundingInto<usize>
     + RoundingInto<i8>
     + RoundingInto<i16>
     + RoundingInto<i32>
-    + RoundingInto<i64>
     + RoundingInto<isize>
-    + SciMantissaAndExponent<Self, i64>
     + Sign
     + Sized
     + Sqrt<Output = Self>
@@ -188,28 +169,28 @@ pub trait PrimitiveFloat:
     /// width of the exponent, and the sign bit.
     /// - For [`f32`]s, this is 32.
     /// - For [`f64`]s, this is 64.
-    const WIDTH: u64;
+    const WIDTH: u32;
     /// The number of bits taken up by the exponent.
     /// - For [`f32`]s, this is 8.
     /// - For [`f64`]s, this is 11.
-    const EXPONENT_WIDTH: u64 = Self::WIDTH - Self::MANTISSA_WIDTH - 1;
+    const EXPONENT_WIDTH: u32 = Self::WIDTH - Self::MANTISSA_WIDTH - 1;
     /// The number of bits taken up by the mantissa.
     /// - For [`f32`]s, this is 23.
     /// - For [`f64`]s, this is 52.
-    const MANTISSA_WIDTH: u64;
+    const MANTISSA_WIDTH: u32;
     /// The smallest possible exponent of a float in the normal range. Any floats with smaller
     /// exponents are subnormal and thus have reduced precision. This is $2-2^{E-1}$.
     /// - For [`f32`]s, this is -126.
     /// - For [`f64`]s, this is -1022.
-    const MIN_NORMAL_EXPONENT: i64 = -(1 << (Self::EXPONENT_WIDTH - 1)) + 2;
+    const MIN_NORMAL_EXPONENT: i32 = -(1 << (Self::EXPONENT_WIDTH - 1)) + 2;
     /// The smallest possible exponent of a float. This is $2-2^{E-1}-M$.
     /// - For [`f32`]s, this is -149.
     /// - For [`f64`]s, this is -1074.
-    const MIN_EXPONENT: i64 = Self::MIN_NORMAL_EXPONENT - (Self::MANTISSA_WIDTH as i64);
+    const MIN_EXPONENT: i32 = Self::MIN_NORMAL_EXPONENT - (Self::MANTISSA_WIDTH as i64);
     /// The largest possible exponent of a float. This is $2^{E-1}-1$.
     /// - For [`f32`]s, this is 127.
     /// - For [`f64`]s, this is 1023.
-    const MAX_EXPONENT: i64 = (1 << (Self::EXPONENT_WIDTH - 1)) - 1;
+    const MAX_EXPONENT: i32 = (1 << (Self::EXPONENT_WIDTH - 1)) - 1;
     /// The smallest positive float. This is $2^{2-2^{E-1}-M}$.
     /// - For [`f32`]s, this is $2^{-149}$, or `1.0e-45`.
     /// - For [`f64`]s, this is $2^{-1074}$, or `5.0e-324`.
@@ -233,13 +214,13 @@ pub trait PrimitiveFloat:
     /// The smallest positive integer that cannot be represented as a float. This is $2^{M+1}+1$.
     /// - For [`f32`]s, this is $2^{24}+1$, or 16777217.
     /// - For [`f64`]s, this is $2^{53}+1$, or 9007199254740993.
-    const SMALLEST_UNREPRESENTABLE_UINT: u64;
+    const SMALLEST_UNREPRESENTABLE_UINT: u32;
     /// If you list all floats in increasing order, excluding NaN and giving negative and positive
     /// zero separate adjacent spots, this will be index of the last element, positive infinity. It
     /// is $2^{M+1}(2^E-1)+1$.
     /// - For [`f32`]s, this is $2^{32}-2^{24}+1$, or 4278190081.
     /// - For [`f64`]s, this is $2^{64}-2^{53}+1$, or 18437736874454810625.
-    const LARGEST_ORDERED_REPRESENTATION: u64;
+    const LARGEST_ORDERED_REPRESENTATION: u32;
 
     fn is_nan(self) -> bool;
 
@@ -251,9 +232,9 @@ pub trait PrimitiveFloat:
 
     fn classify(self) -> FpCategory;
 
-    fn to_bits(self) -> u64;
+    fn to_bits(self) -> u32;
 
-    fn from_bits(v: u64) -> Self;
+    fn from_bits(v: u32) -> Self;
 
     /// Tests whether `self` is negative zero.
     ///
@@ -433,13 +414,13 @@ pub trait PrimitiveFloat:
     ///     4278190081
     /// );
     /// ```
-    fn to_ordered_representation(self) -> u64 {
+    fn to_ordered_representation(self) -> u32 {
         assert!(!self.is_nan());
         let bits = self.to_bits();
         if self.sign() == Ordering::Greater {
-            (u64::low_mask(Self::EXPONENT_WIDTH) << Self::MANTISSA_WIDTH) + bits + 1
+            (u32::low_mask(Self::EXPONENT_WIDTH) << Self::MANTISSA_WIDTH) + bits + 1
         } else {
-            (u64::low_mask(Self::EXPONENT_WIDTH + 1) << Self::MANTISSA_WIDTH) - bits
+            (u32::low_mask(Self::EXPONENT_WIDTH + 1) << Self::MANTISSA_WIDTH) - bits
         }
     }
 
@@ -475,10 +456,10 @@ pub trait PrimitiveFloat:
     ///     f32::POSITIVE_INFINITY
     /// );
     /// ```
-    fn from_ordered_representation(n: u64) -> Self {
-        let zero_exp = u64::low_mask(Self::EXPONENT_WIDTH) << Self::MANTISSA_WIDTH;
+    fn from_ordered_representation(n: u32) -> Self {
+        let zero_exp = u32::low_mask(Self::EXPONENT_WIDTH) << Self::MANTISSA_WIDTH;
         let f = if n <= zero_exp {
-            Self::from_bits((u64::low_mask(Self::EXPONENT_WIDTH + 1) << Self::MANTISSA_WIDTH) - n)
+            Self::from_bits((u32::low_mask(Self::EXPONENT_WIDTH + 1) << Self::MANTISSA_WIDTH) - n)
         } else {
             let f = Self::from_bits(n - zero_exp - 1);
             assert_eq!(f.sign(), Ordering::Greater);
@@ -510,7 +491,7 @@ pub trait PrimitiveFloat:
     /// assert_eq!(1.5.precision(), 2);
     /// assert_eq!(1.234f32.precision(), 23);
     /// ```
-    fn precision(self) -> u64 {
+    fn precision(self) -> u32 {
         assert!(self.is_finite());
         assert!(self != Self::ZERO);
         let (mut mantissa, exponent) = self.raw_mantissa_and_exponent();
@@ -550,13 +531,13 @@ pub trait PrimitiveFloat:
     /// assert_eq!(f32::max_precision_for_sci_exponent(-148), 2);
     /// assert_eq!(f32::max_precision_for_sci_exponent(-147), 3);
     /// ```
-    fn max_precision_for_sci_exponent(exponent: i64) -> u64 {
+    fn max_precision_for_sci_exponent(exponent: i32) -> u32 {
         assert!(exponent >= Self::MIN_EXPONENT);
         assert!(exponent <= Self::MAX_EXPONENT);
         if exponent >= Self::MIN_NORMAL_EXPONENT {
             Self::MANTISSA_WIDTH + 1
         } else {
-            u64::wrapping_from(exponent - Self::MIN_EXPONENT) + 1
+            u32::wrapping_from(exponent - Self::MIN_EXPONENT) + 1
         }
     }
 }
@@ -571,8 +552,8 @@ macro_rules! impl_basic_traits_primitive_float {
         $min_positive_normal: expr
     ) => {
         impl PrimitiveFloat for $t {
-            const WIDTH: u64 = $width;
-            const MANTISSA_WIDTH: u64 = (std::$t::MANTISSA_DIGITS as u64) - 1;
+            const WIDTH: u32 = $width;
+            const MANTISSA_WIDTH: u32 = (std::$t::MANTISSA_DIGITS as u32) - 1;
 
             const POSITIVE_INFINITY: Self = std::$t::INFINITY;
             const NEGATIVE_INFINITY: Self = std::$t::NEG_INFINITY;
@@ -582,9 +563,9 @@ macro_rules! impl_basic_traits_primitive_float {
             const MIN_POSITIVE_SUBNORMAL: Self = $min_positive_subnormal;
             const MAX_SUBNORMAL: Self = $max_subnormal;
             const MIN_POSITIVE_NORMAL: Self = $min_positive_normal;
-            const SMALLEST_UNREPRESENTABLE_UINT: u64 = (1 << (Self::MANTISSA_WIDTH + 1)) + 1;
-            // We can't shift by $width when $width is 64, so we shift by $width - 1 and then by 1
-            const LARGEST_ORDERED_REPRESENTATION: u64 = (1u64 << ($width - 1) << 1)
+            const SMALLEST_UNREPRESENTABLE_UINT: u32 = (1 << (Self::MANTISSA_WIDTH + 1)) + 1;
+            // We can't shift by $width when $width is 32, so we shift by $width - 1 and then by 1
+            const LARGEST_ORDERED_REPRESENTATION: u32 = (1u32 << ($width - 1) << 1)
                 .wrapping_sub(((1 << Self::MANTISSA_WIDTH) - 1) << 1)
                 - 1;
 
@@ -614,12 +595,12 @@ macro_rules! impl_basic_traits_primitive_float {
             }
 
             #[inline]
-            fn to_bits(self) -> u64 {
-                u64::wrapping_from($t::to_bits(self))
+            fn to_bits(self) -> u32 {
+                u32::wrapping_from($t::to_bits(self))
             }
 
             #[inline]
-            fn from_bits(v: u64) -> $t {
+            fn from_bits(v: u32) -> $t {
                 $t::from_bits(v.exact_into())
             }
         }
@@ -664,8 +645,8 @@ macro_rules! impl_basic_traits_primitive_float {
 }
 impl_basic_traits_primitive_float!(f32, 32, 1.0e-45, 1.1754942e-38, 1.1754944e-38);
 impl_basic_traits_primitive_float!(
-    f64,
-    64,
+    f32,
+    32,
     5.0e-324,
     2.225073858507201e-308,
     2.2250738585072014e-308
