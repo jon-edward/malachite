@@ -644,10 +644,3 @@ macro_rules! impl_basic_traits_primitive_float {
     };
 }
 impl_basic_traits_primitive_float!(f32, 32, 1.0e-45, 1.1754942e-38, 1.1754944e-38);
-impl_basic_traits_primitive_float!(
-    f32,
-    32,
-    5.0e-324,
-    2.225073858507201e-308,
-    2.2250738585072014e-308
-);
