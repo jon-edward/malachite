@@ -135,7 +135,6 @@ macro_rules! impl_mod_pow_precomputed_fast {
     };
 }
 impl_mod_pow_precomputed_fast!(u32, u64, limbs_invert_limb_u32);
-impl_mod_pow_precomputed_fast!(u64, u128, limbs_invert_limb_u64);
 
 macro_rules! impl_mod_pow_precomputed_promoted {
     ($t:ident) => {
@@ -179,41 +178,6 @@ macro_rules! impl_mod_pow_precomputed_promoted {
 }
 impl_mod_pow_precomputed_promoted!(u8);
 impl_mod_pow_precomputed_promoted!(u16);
-
-impl ModPowPrecomputed<u64, u128> for u128 {
-    type Output = u128;
-    type Data = ();
-
-    /// Precomputes data for modular exponentiation.
-    ///
-    /// See `mod_pow_precomputed` and
-    /// [`mod_pow_precomputed_assign`](super::traits::ModPowPrecomputedAssign).
-    ///
-    /// # Worst-case complexity
-    /// Constant time and additional memory.
-    fn precompute_mod_pow_data(_m: &u128) {}
-
-    /// Raises a number to a power modulo another number $m$. Assumes the input is already
-    /// reduced modulo $m$.
-    ///
-    /// Some precomputed data is provided; this speeds up computations involving several modular
-    /// exponentiations with the same modulus. The precomputed data should be obtained using
-    /// [`precompute_mod_pow_data`](ModPowPrecomputed::precompute_mod_pow_data).
-    ///
-    /// # Worst-case complexity
-    /// $T(n) = O(n)$
-    ///
-    /// $M(n) = O(1)$
-    ///
-    /// where $T$ is time, $M$ is additional memory, and $n$ is `exp.significant_bits()`.
-    ///
-    /// # Examples
-    /// See [here](super::mod_pow#mod_pow_precomputed).
-    #[inline]
-    fn mod_pow_precomputed(self, exp: u64, m: u128, _data: &()) -> u128 {
-        simple_binary_mod_pow(self, exp, m)
-    }
-}
 
 impl ModPowPrecomputed<u64, usize> for usize {
     type Output = usize;
