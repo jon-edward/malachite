@@ -62,17 +62,14 @@ pub trait PrimitiveInt:
     + AddMulAssign<Self, Self>
     + ArithmeticCheckedShl<i16, Output = Self>
     + ArithmeticCheckedShl<i32, Output = Self>
-    + ArithmeticCheckedShl<i64, Output = Self>
     + ArithmeticCheckedShl<i8, Output = Self>
     + ArithmeticCheckedShl<isize, Output = Self>
     + ArithmeticCheckedShl<u16, Output = Self>
     + ArithmeticCheckedShl<u32, Output = Self>
-    + ArithmeticCheckedShl<u64, Output = Self>
     + ArithmeticCheckedShl<u8, Output = Self>
     + ArithmeticCheckedShl<usize, Output = Self>
     + ArithmeticCheckedShr<i16, Output = Self>
     + ArithmeticCheckedShr<i32, Output = Self>
-    + ArithmeticCheckedShr<i64, Output = Self>
     + ArithmeticCheckedShr<i8, Output = Self>
     + ArithmeticCheckedShr<isize, Output = Self>
     + Binary
@@ -88,8 +85,6 @@ pub trait PrimitiveInt:
     + BitScan
     + BitXor<Self, Output = Self>
     + BitXorAssign<Self>
-    + CeilingRoot<u64, Output = Self>
-    + CeilingRootAssign<u64>
     + CeilingSqrt<Output = Self>
     + CeilingSqrtAssign
     + CheckedAdd<Self, Output = Self>
@@ -98,23 +93,18 @@ pub trait PrimitiveInt:
     + CheckedDiv<Self, Output = Self>
     + CheckedMul<Self, Output = Self>
     + CheckedNeg<Output = Self>
-    + CheckedPow<u64, Output = Self>
-    + CheckedRoot<u64, Output = Self>
     + CheckedSqrt<Output = Self>
     + CheckedSquare<Output = Self>
     + CheckedSub<Self, Output = Self>
     + CheckedSubMul<Self, Self, Output = Self>
     + Clone
     + ConvertibleFrom<f32>
-    + ConvertibleFrom<f64>
     + ConvertibleFrom<i16>
     + ConvertibleFrom<i32>
-    + ConvertibleFrom<i64>
     + ConvertibleFrom<i8>
     + ConvertibleFrom<isize>
     + ConvertibleFrom<u16>
     + ConvertibleFrom<u32>
-    + ConvertibleFrom<u64>
     + ConvertibleFrom<u8>
     + ConvertibleFrom<usize>
     + Copy
@@ -141,27 +131,21 @@ pub trait PrimitiveInt:
     + EqModPowerOf2<Self>
     + ExactFrom<i16>
     + ExactFrom<i32>
-    + ExactFrom<i64>
     + ExactFrom<i8>
     + ExactFrom<isize>
     + ExactFrom<u16>
     + ExactFrom<u32>
-    + ExactFrom<u64>
     + ExactFrom<u8>
     + ExactFrom<usize>
     + ExactInto<i16>
     + ExactInto<i32>
-    + ExactInto<i64>
     + ExactInto<i8>
     + ExactInto<isize>
     + ExactInto<u16>
     + ExactInto<u32>
-    + ExactInto<u64>
     + ExactInto<u8>
     + ExactInto<usize>
     + ExtendedGcd<Self>
-    + FloorRoot<u64, Output = Self>
-    + FloorRootAssign<u64>
     + FloorSqrt<Output = Self>
     + FloorSqrtAssign
     + From<bool>
@@ -201,30 +185,24 @@ pub trait PrimitiveInt:
     + OverflowingDivAssign<Self>
     + OverflowingFrom<i16>
     + OverflowingFrom<i32>
-    + OverflowingFrom<i64>
     + OverflowingFrom<i8>
     + OverflowingFrom<isize>
     + OverflowingFrom<u16>
     + OverflowingFrom<u32>
-    + OverflowingFrom<u64>
     + OverflowingFrom<u8>
     + OverflowingFrom<usize>
     + OverflowingInto<i16>
     + OverflowingInto<i32>
-    + OverflowingInto<i64>
     + OverflowingInto<i8>
     + OverflowingInto<isize>
     + OverflowingInto<u16>
     + OverflowingInto<u32>
-    + OverflowingInto<u64>
     + OverflowingInto<u8>
     + OverflowingInto<usize>
     + OverflowingMul<Self, Output = Self>
     + OverflowingMulAssign<Self>
     + OverflowingNeg<Output = Self>
     + OverflowingNegAssign
-    + OverflowingPow<u64, Output = Self>
-    + OverflowingPowAssign<u64>
     + OverflowingSquare<Output = Self>
     + OverflowingSquareAssign
     + OverflowingSub<Self, Output = Self>
@@ -235,9 +213,6 @@ pub trait PrimitiveInt:
     + PartialEq<Self>
     + PartialOrd<Self>
     + PartialOrdAbs<Self>
-    + Pow<u64, Output = Self>
-    + PowAssign<u64>
-    + PowerOf2<u64>
     + Product
     + Rem<Self, Output = Self>
     + RemAssign<Self>
@@ -249,40 +224,30 @@ pub trait PrimitiveInt:
     + RotateRightAssign
     + RoundToMultiple<Self, Output = Self>
     + RoundToMultipleAssign<Self>
-    + RoundToMultipleOfPowerOf2<u64, Output = Self>
-    + RoundToMultipleOfPowerOf2Assign<u64>
     + RoundingFrom<f32>
-    + RoundingFrom<f64>
     + RoundingInto<f32>
-    + RoundingInto<f64>
     + SaturatingAdd<Self, Output = Self>
     + SaturatingAddAssign<Self>
     + SaturatingAddMul<Self, Self, Output = Self>
     + SaturatingAddMulAssign<Self, Self>
     + SaturatingFrom<i16>
     + SaturatingFrom<i32>
-    + SaturatingFrom<i64>
     + SaturatingFrom<i8>
     + SaturatingFrom<isize>
     + SaturatingFrom<u16>
     + SaturatingFrom<u32>
-    + SaturatingFrom<u64>
     + SaturatingFrom<u8>
     + SaturatingFrom<usize>
     + SaturatingInto<i16>
     + SaturatingInto<i32>
-    + SaturatingInto<i64>
     + SaturatingInto<i8>
     + SaturatingInto<isize>
     + SaturatingInto<u16>
     + SaturatingInto<u32>
-    + SaturatingInto<u64>
     + SaturatingInto<u8>
     + SaturatingInto<usize>
     + SaturatingMul<Self, Output = Self>
     + SaturatingMulAssign<Self>
-    + SaturatingPow<u64, Output = Self>
-    + SaturatingPowAssign<u64>
     + SaturatingSquare<Output = Self>
     + SaturatingSquareAssign
     + SaturatingSub<Self, Output = Self>
@@ -291,70 +256,56 @@ pub trait PrimitiveInt:
     + SaturatingSubMulAssign<Self, Self>
     + Shl<i16, Output = Self>
     + Shl<i32, Output = Self>
-    + Shl<i64, Output = Self>
     + Shl<i8, Output = Self>
     + Shl<u16, Output = Self>
     + Shl<u32, Output = Self>
-    + Shl<u64, Output = Self>
     + Shl<u8, Output = Self>
     + ShlAssign<i16>
     + ShlAssign<i32>
-    + ShlAssign<i64>
     + ShlAssign<i8>
     + ShlAssign<isize>
     + ShlAssign<u16>
     + ShlAssign<u32>
-    + ShlAssign<u64>
     + ShlAssign<u8>
     + ShlAssign<usize>
     + ShlRound<i16, Output = Self>
     + ShlRound<i32, Output = Self>
-    + ShlRound<i64, Output = Self>
     + ShlRound<i8, Output = Self>
     + ShlRound<isize, Output = Self>
     + ShlRoundAssign<i16>
     + ShlRoundAssign<i32>
-    + ShlRoundAssign<i64>
     + ShlRoundAssign<i8>
     + ShlRoundAssign<isize>
     + Shr<i16, Output = Self>
     + Shr<i32, Output = Self>
-    + Shr<i64, Output = Self>
     + Shr<i8, Output = Self>
     + Shr<isize, Output = Self>
     + Shr<u16, Output = Self>
     + Shr<u32, Output = Self>
-    + Shr<u64, Output = Self>
     + Shr<u8, Output = Self>
     + Shr<usize, Output = Self>
     + ShrAssign<i16>
     + ShrAssign<i32>
-    + ShrAssign<i64>
     + ShrAssign<i8>
     + ShrAssign<isize>
     + ShrAssign<u16>
     + ShrAssign<u32>
-    + ShrAssign<u64>
     + ShrAssign<u8>
     + ShrAssign<usize>
     + ShrRound<i16, Output = Self>
     + ShrRound<i32, Output = Self>
-    + ShrRound<i64, Output = Self>
     + ShrRound<i8, Output = Self>
     + ShrRound<isize, Output = Self>
     + ShrRound<u16, Output = Self>
     + ShrRound<u32, Output = Self>
-    + ShrRound<u64, Output = Self>
     + ShrRound<u8, Output = Self>
     + ShrRound<usize, Output = Self>
     + ShrRoundAssign<i16>
     + ShrRoundAssign<i32>
-    + ShrRoundAssign<i64>
     + ShrRoundAssign<i8>
     + ShrRoundAssign<isize>
     + ShrRoundAssign<u16>
     + ShrRoundAssign<u32>
-    + ShrRoundAssign<u64>
     + ShrRoundAssign<u8>
     + ShrRoundAssign<usize>
     + Sign
@@ -373,23 +324,19 @@ pub trait PrimitiveInt:
     + TryFrom<NiceFloat<f32>>
     + TryFrom<i16>
     + TryFrom<i32>
-    + TryFrom<i64>
     + TryFrom<i8>
     + TryFrom<isize>
     + TryFrom<u16>
     + TryFrom<u32>
-    + TryFrom<u64>
     + TryFrom<u8>
     + TryFrom<usize>
     + TryInto<NiceFloat<f32>>
     + TryInto<i16>
     + TryInto<i32>
-    + TryInto<i64>
     + TryInto<i8>
     + TryInto<isize>
     + TryInto<u16>
     + TryInto<u32>
-    + TryInto<u64>
     + TryInto<u8>
     + TryInto<usize>
     + Two
@@ -402,30 +349,24 @@ pub trait PrimitiveInt:
     + WrappingDivAssign<Self>
     + WrappingFrom<i16>
     + WrappingFrom<i32>
-    + WrappingFrom<i64>
     + WrappingFrom<i8>
     + WrappingFrom<isize>
     + WrappingFrom<u16>
     + WrappingFrom<u32>
-    + WrappingFrom<u64>
     + WrappingFrom<u8>
     + WrappingFrom<usize>
     + WrappingInto<i16>
     + WrappingInto<i32>
-    + WrappingInto<i64>
     + WrappingInto<i8>
     + WrappingInto<isize>
     + WrappingInto<u16>
     + WrappingInto<u32>
-    + WrappingInto<u64>
     + WrappingInto<u8>
     + WrappingInto<usize>
     + WrappingMul<Self, Output = Self>
     + WrappingMulAssign<Self>
     + WrappingNeg<Output = Self>
     + WrappingNegAssign
-    + WrappingPow<u64, Output = Self>
-    + WrappingPowAssign<u64>
     + WrappingSquare<Output = Self>
     + WrappingSquareAssign
     + WrappingSub<Self, Output = Self>
@@ -435,7 +376,7 @@ pub trait PrimitiveInt:
     + Zero
 {
     /// The number of bits of `Self`.
-    const WIDTH: u64;
+    const WIDTH: u32;
 
     /// The base-2 logarithm of the number of bits of `Self`.
     ///
@@ -446,7 +387,7 @@ pub trait PrimitiveInt:
     /// Note that this value is correct for all of the built-in primitive integer types, but it will
     /// not be correct for custom types whose $W$ is not a power of 2. For such implementations,
     /// `LOG_WIDTH` should not be used.
-    const LOG_WIDTH: u64 = Self::WIDTH.trailing_zeros() as u64;
+    const LOG_WIDTH: u32 = Self::WIDTH.trailing_zeros() as u32;
 
     /// A mask that consists of `LOG_WIDTH` bits.
     ///
@@ -457,7 +398,7 @@ pub trait PrimitiveInt:
     /// Note that this value is correct for all of the built-in primitive integer types, but it will
     /// not be correct for custom types whose $W$ is not a power of 2. For such implementations,
     /// `WIDTH_MASK` should not be used.
-    const WIDTH_MASK: u64 = Self::WIDTH - 1;
+    const WIDTH_MASK: u32 = Self::WIDTH - 1;
 
     /// Gets the most-significant bit of `Self`. For signed integers, this is the sign bit.
     ///
@@ -488,7 +429,7 @@ macro_rules! impl_basic_traits_primitive_int {
         ///
         /// See [here](self).
         impl PrimitiveInt for $t {
-            const WIDTH: u64 = $width;
+            const WIDTH: u32 = $width;
         }
 
         impl_named!($t);
@@ -541,10 +482,8 @@ macro_rules! impl_basic_traits_primitive_int {
 impl_basic_traits_primitive_int!(u8, 8);
 impl_basic_traits_primitive_int!(u16, 16);
 impl_basic_traits_primitive_int!(u32, 32);
-impl_basic_traits_primitive_int!(u64, 64);
-impl_basic_traits_primitive_int!(usize, 0usize.trailing_zeros() as u64);
+impl_basic_traits_primitive_int!(usize, 0usize.trailing_zeros() as u32);
 impl_basic_traits_primitive_int!(i8, 8);
 impl_basic_traits_primitive_int!(i16, 16);
 impl_basic_traits_primitive_int!(i32, 32);
-impl_basic_traits_primitive_int!(i64, 64);
-impl_basic_traits_primitive_int!(isize, 0usize.trailing_zeros() as u64);
+impl_basic_traits_primitive_int!(isize, 0usize.trailing_zeros() as u32);
