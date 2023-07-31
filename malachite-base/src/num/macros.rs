@@ -5,7 +5,6 @@ macro_rules! apply_to_unsigneds {
         $m!(u8);
         $m!(u16);
         $m!(u32);
-        $m!(u64);
         $m!(usize);
     };
 }
