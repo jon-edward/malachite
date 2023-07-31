@@ -49,7 +49,6 @@ pub trait PrimitiveUnsigned:
     + Digits<u16>
     + Digits<u32>
     + Digits<u64>
-    + Digits<u128>
     + Digits<usize>
     + ExtendedGcd<Self, Gcd = Self>
     + Factorial
@@ -61,7 +60,6 @@ pub trait PrimitiveUnsigned:
     + FromOtherTypeSlice<u16>
     + FromOtherTypeSlice<u32>
     + FromOtherTypeSlice<u64>
-    + FromOtherTypeSlice<u128>
     + FromOtherTypeSlice<usize>
     + Gcd<Self, Output = Self>
     + GcdAssign<Self>
@@ -97,34 +95,28 @@ pub trait PrimitiveUnsigned:
     + ModPowerOf2Shl<i16, Output = Self>
     + ModPowerOf2Shl<i32, Output = Self>
     + ModPowerOf2Shl<i64, Output = Self>
-    + ModPowerOf2Shl<i128, Output = Self>
     + ModPowerOf2Shl<u8, Output = Self>
     + ModPowerOf2Shl<u16, Output = Self>
     + ModPowerOf2Shl<u32, Output = Self>
     + ModPowerOf2Shl<u64, Output = Self>
-    + ModPowerOf2Shl<u128, Output = Self>
     + ModPowerOf2ShlAssign<u8>
     + ModPowerOf2ShlAssign<u16>
     + ModPowerOf2ShlAssign<u32>
     + ModPowerOf2ShlAssign<u64>
-    + ModPowerOf2ShlAssign<u128>
     + ModPowerOf2ShlAssign<usize>
     + ModPowerOf2ShlAssign<i8>
     + ModPowerOf2ShlAssign<i16>
     + ModPowerOf2ShlAssign<i32>
     + ModPowerOf2ShlAssign<i64>
-    + ModPowerOf2ShlAssign<i128>
     + ModPowerOf2ShlAssign<isize>
     + ModPowerOf2Shr<i8, Output = Self>
     + ModPowerOf2Shr<i16, Output = Self>
     + ModPowerOf2Shr<i32, Output = Self>
     + ModPowerOf2Shr<i64, Output = Self>
-    + ModPowerOf2Shr<i128, Output = Self>
     + ModPowerOf2ShrAssign<i8>
     + ModPowerOf2ShrAssign<i16>
     + ModPowerOf2ShrAssign<i32>
     + ModPowerOf2ShrAssign<i64>
-    + ModPowerOf2ShrAssign<i128>
     + ModPowerOf2ShrAssign<isize>
     + ModPowerOf2Square<Output = Self>
     + ModPowerOf2SquareAssign
@@ -149,13 +141,11 @@ pub trait PrimitiveUnsigned:
     + PowerOf2Digits<u16>
     + PowerOf2Digits<u32>
     + PowerOf2Digits<u64>
-    + PowerOf2Digits<u128>
     + PowerOf2Digits<usize>
     + PowerOf2DigitIterable<u8>
     + PowerOf2DigitIterable<u16>
     + PowerOf2DigitIterable<u32>
     + PowerOf2DigitIterable<u64>
-    + PowerOf2DigitIterable<u128>
     + PowerOf2DigitIterable<usize>
     + Primes<I = PrimesIterator<Self>, LI = PrimesLessThanIterator<Self>>
     + PrimitiveInt
@@ -171,13 +161,11 @@ pub trait PrimitiveUnsigned:
     + VecFromOtherType<u16>
     + VecFromOtherType<u32>
     + VecFromOtherType<u64>
-    + VecFromOtherType<u128>
     + VecFromOtherType<usize>
     + VecFromOtherTypeSlice<u8>
     + VecFromOtherTypeSlice<u16>
     + VecFromOtherTypeSlice<u32>
     + VecFromOtherTypeSlice<u64>
-    + VecFromOtherTypeSlice<u128>
     + VecFromOtherTypeSlice<usize>
     + XXAddYYToZZ
     + XXDivModYToQR
